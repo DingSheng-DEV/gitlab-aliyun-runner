@@ -58,7 +58,8 @@ result=$(aliyun ecs CreateInstance \
     --SecurityGroupId $SECURITY_GROUP_ID \
     --VSwitchId $VSWITCH_ID \
     --InternetMaxBandwidthOut 10 \
-    --KeyPairName $KEY_PAIR_NAME
+    --KeyPairName $KEY_PAIR_NAME \
+    --SpotStrategy "SpotAsPriceGo"
     )
 INSTANCE_ID=$(echo "$result" | jq -r '.InstanceId')
 echo "ECS实例ID: $INSTANCE_ID"
