@@ -1,10 +1,8 @@
 #!/bin/bash
 
-# 需要提前准备：安全组、镜像、交换机、密钥对
+# 阿里云需要提前准备：安全组、镜像、交换机、密钥对
 
-# 环境预装jq  aliyun
-
-# ecs镜像预装  nfs-common、docker
+# ecs镜像预装  nfs-common、docker、git
 
 # 配置变量
 ALIYUN_REGION="$CUSTOM_ENV_ALIYUN_REGION"          # 阿里云区域
@@ -19,8 +17,7 @@ SK="$CUSTOM_ENV_SK"
 
 #PUBLIC_IP="8.152.213.250"
 #ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $SSH_KEY -T  root@$PUBLIC_IP 'date'
-#
-#exit
+
 # 安装jq
 if ! command -v jq &> /dev/null; then
     echo "Installing jq..."
@@ -53,7 +50,7 @@ fi
 aliyun configure set --profile default --access-key-id $AK --access-key-secret $SK --region $ALIYUN_REGION
 
 # 创建 ECS 实例
-echo "Creating ECS instance..."
+echo "创建ECS实例..."
 result=$(aliyun ecs CreateInstance \
     --RegionId $ALIYUN_REGION \
     --ImageId $IMAGE_ID \
@@ -64,15 +61,15 @@ result=$(aliyun ecs CreateInstance \
     --KeyPairName $KEY_PAIR_NAME
     )
 INSTANCE_ID=$(echo "$result" | jq -r '.InstanceId')
-echo "ECS Instance ID: $INSTANCE_ID"
+echo "ECS实例ID: $INSTANCE_ID"
 
 
-echo "等待创建"
+echo "等待创建..."
 while true; do
     STATUS=$(aliyun ecs DescribeInstances --InstanceIds "[\"$INSTANCE_ID\"]"  )
-    echo $STATUS
+#    echo $STATUS
     STATUS=$(echo $STATUS | jq -r ".Instances.Instance[0].Status")
-    echo $STATUS
+#    echo $STATUS
     if [ "$STATUS" == "Stopped" ]; then
         break
     fi
@@ -84,12 +81,15 @@ res=$(aliyun ecs AllocatePublicIpAddress --InstanceId $INSTANCE_ID)
 PUBLIC_IP=$(echo "$res" | jq -r ".IpAddress")
 echo $PUBLIC_IP
 
+# Todo 根据条件判断，是否直接从内网IP连接
+# Todo 阿里云上架一个镜像
+
 # 启动 ECS 实例
-echo "Starting ECS instance..."
+echo "启动ECS实例"
 res=$(aliyun ecs StartInstance --InstanceId $INSTANCE_ID)
 
 # 等待实例启动
-echo "等待实例启动"
+echo "等待实例启动..."
 #while true; do
 #    res=$(aliyun ecs DescribeInstances --InstanceIds "[\"$INSTANCE_ID\"]"  )
 #
@@ -102,21 +102,10 @@ echo "等待实例启动"
 
 # 持续测试端口
 while ! nc -zv -w 1 "$PUBLIC_IP" "22"; do
-    echo "Retrying in 1 seconds..."
+    echo "1秒后重试连接..."
     sleep 1
 done
 
-echo "执行构建命令"
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $SSH_KEY -T  root@$PUBLIC_IP <<EOF
-  date
-EOF
+echo "$INSTANCE_ID:$PUBLIC_IP" > /tmp/runner_$CUSTOM_ENV_CI_PIPELINE_ID_$CUSTOM_ENV_CI_JOB_ID_$CUSTOM_ENV_CI_JOB_NAME.txt
 
-echo "$PUBLIC_IP" > /tmp/ec2_ip.txt
-echo "$INSTANCE_ID" > /tmp/INSTANCE_ID.txt
-
-# # 删除 ECS 实例（可选）
-# echo "删除ecs"
-# aliyun ecs DeleteInstance --InstanceId $INSTANCE_ID --Force true
-
-
-echo "执行完毕"
+echo "创建完毕"
