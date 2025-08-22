@@ -1,9 +1,9 @@
 #!/bin/bash
 
+source .env
 
 IFS=':' read -r instance_id public_ip  <<< $(cat /tmp/runner_$CUSTOM_ENV_CI_PIPELINE_ID_$CUSTOM_ENV_CI_JOB_ID_$CUSTOM_ENV_CI_JOB_NAME.txt)
-# Todo 修改key设定方式
-SSH_KEY="/usr/gitlab-runner/scripts/test.pem"
+
 ssh_param="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $SSH_KEY"
 ssh_target=root@$public_ip
 

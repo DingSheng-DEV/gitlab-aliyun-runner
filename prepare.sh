@@ -3,17 +3,11 @@
 # 阿里云需要提前准备：安全组、镜像、交换机、密钥对
 
 # ecs镜像预装  nfs-common、docker、git
+source .env
 
 # 配置变量
-ALIYUN_REGION="$CUSTOM_ENV_ALIYUN_REGION"          # 阿里云区域
 IMAGE_ID="$CUSTOM_ENV_IMAGE_ID"  # 镜像 ID
 INSTANCE_TYPE="$CUSTOM_ENV_INSTANCE_TYPE"         # 实例类型
-SECURITY_GROUP_ID="$CUSTOM_ENV_SECURITY_GROUP_ID"  # 安全组 ID
-VSWITCH_ID="$CUSTOM_ENV_VSWITCH_ID"       # 虚拟交换机 ID
-KEY_PAIR_NAME="$CUSTOM_ENV_KEY_PAIR_NAME" # SSH 密钥对名称
-SSH_KEY="$CUSTOM_ENV_SSH_KEY"                 # SSH 私钥文件地址
-AK="$CUSTOM_ENV_AK"
-SK="$CUSTOM_ENV_SK"
 
 #PUBLIC_IP="8.152.213.250"
 #ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $SSH_KEY -T  root@$PUBLIC_IP 'date'
