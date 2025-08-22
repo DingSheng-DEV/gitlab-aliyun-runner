@@ -20,7 +20,7 @@ case $2 in
       ;;
     build_script)
       scp $ssh_param $1 $ssh_target:/tmp/script
-      ssh $ssh_param -T $ssh_target "cd $CUSTOM_ENV_CI_PROJECT_DIR && bash /tmp/script"
+      ssh $ssh_param -T $ssh_target "bash -ic 'cd $CUSTOM_ENV_CI_PROJECT_DIR && bash /tmp/script'"
       ;;
     *)
       echo "尚未实现"
