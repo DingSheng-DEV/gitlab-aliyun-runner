@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source .env
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source $SCRIPT_DIR/.env
 
 IFS=':' read -r instance_id public_ip  <<< $(cat /tmp/runner_$CUSTOM_ENV_CI_PIPELINE_ID_$CUSTOM_ENV_CI_JOB_ID_$CUSTOM_ENV_CI_JOB_NAME.txt)
 

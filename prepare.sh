@@ -3,7 +3,8 @@
 # 阿里云需要提前准备：安全组、镜像、交换机、密钥对
 
 # ecs镜像预装  nfs-common、docker、git
-source .env
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source $SCRIPT_DIR/.env
 
 # 配置变量
 IMAGE_ID="$CUSTOM_ENV_IMAGE_ID"  # 镜像 ID
