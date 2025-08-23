@@ -102,6 +102,11 @@ while ! nc -zv -w 1 "$PUBLIC_IP" "22"; do
     sleep 1
 done
 
+
+echo "设置自动释放"
+echo $ALIYUN_REGION $INSTANCE_ID
+aliyun ecs ModifyInstanceAutoReleaseTime --region $ALIYUN_REGION  --RegionId "$ALIYUN_REGION" --InstanceId "$INSTANCE_ID" --AutoReleaseTime $(date -u -d "+31 minutes" +"%Y-%m-%dT%H:%M:%S"Z)
+
 echo "$INSTANCE_ID:$PUBLIC_IP" > /tmp/runner_$CUSTOM_ENV_CI_PIPELINE_ID_$CUSTOM_ENV_CI_JOB_ID_$CUSTOM_ENV_CI_JOB_NAME.txt
 
 echo "创建完毕"
