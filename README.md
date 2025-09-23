@@ -62,7 +62,8 @@
 ```   
 4. .gitlab-ci.yml配置样例
    
-   <img width="711" height="764" alt="image" src="https://github.com/user-attachments/assets/0250dd46-c999-4720-998c-563274b644bf" />
+   <img width="710" height="763" alt="image" src="https://github.com/user-attachments/assets/cae4c06f-1619-437b-a072-1effd3ce1c09" />
+
 5. 按照上述配置完毕之后，触发流水线构建即可。
 
 ---
